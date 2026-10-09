@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111214">
+  <meta name="description" content="Ideas educativas para pensar objetos que podrían fabricarse con impresión 3D FDM.">
+  <title>Aplicaciones de impresión 3D — 3DScracth</title>
+  <style>
+    :root { color-scheme:dark; --bg:#111214; --panel:#1c1d20; --ink:#f4f4f3; --muted:#c1c1c2; --accent:#55aef2; --line:#434548; --warm:#a56844; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:Arial,Helvetica,sans-serif; line-height:1.6; }
+    a { color:inherit; }
+    .wrap { width:min(1020px,calc(100% - 36px)); margin:0 auto; }
+    header { min-height:78px; display:flex; align-items:center; justify-content:space-between; gap:18px; border-bottom:1px solid var(--line); }
+    .brand { display:inline-flex; align-items:center; gap:11px; color:var(--ink); text-decoration:none; font-weight:800; letter-spacing:.12em; }
+    .brand img { width:42px; height:42px; object-fit:contain; border-radius:50%; }
+    .menu-trigger { display:grid; place-items:center; width:48px; height:48px; border:1px solid var(--line); border-radius:14px; background:var(--panel); color:var(--accent); font-size:1.15rem; letter-spacing:.12em; text-decoration:none; }
+    .menu-trigger:hover, .menu-trigger:focus-visible { border-color:var(--accent); background:#293a48; outline:none; }
+    .drawer { position:fixed; inset:0; z-index:10; background:#0009; opacity:0; visibility:hidden; transition:.2s; }
+    .drawer:target { opacity:1; visibility:visible; }
+    .drawer-panel { position:absolute; top:0; right:0; display:flex; flex-direction:column; gap:24px; width:min(330px,86vw); height:100%; overflow-y:auto; padding:28px 22px; border-left:1px solid var(--line); background:#111214f5; transform:translateX(100%); transition:transform .22s ease; }
+    .drawer:target .drawer-panel { transform:translateX(0); }
+    .drawer-head { display:flex; align-items:center; justify-content:space-between; color:var(--accent); font-weight:850; letter-spacing:.12em; }
+    .drawer-close { display:grid; place-items:center; width:38px; height:38px; border:1px solid var(--line); border-radius:10px; color:var(--ink); text-decoration:none; font-size:1.3rem; }
+    .drawer-links { display:flex; flex-direction:column; gap:9px; }
+    .drawer-links a { padding:13px 14px; border:1px solid var(--line); border-radius:12px; background:var(--panel); color:var(--muted); text-decoration:none; font-weight:700; }
+    .drawer-links a:hover, .drawer-links a:focus-visible { border-color:var(--accent); background:var(--accent); color:#0d1820; outline:none; }
+    main { padding:38px 0 64px; }
+    .eyebrow { color:var(--accent); font-size:.82rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { max-width:750px; margin:8px 0 14px; font-size:clamp(2.25rem,6vw,4rem); line-height:1.05; }
+    .intro { max-width:760px; color:var(--muted); font-size:1.08rem; }
+    .notice { margin:26px 0 36px; padding:14px 16px; border-left:3px solid var(--warm); background:var(--panel); color:var(--muted); }
+    .faq-section { margin-top:42px; scroll-margin-top:18px; }
+    h2 { margin:0 0 16px; font-size:clamp(1.5rem,4vw,2rem); }
+    .faq-list { display:grid; gap:10px; }
+    details { border:1px solid var(--line); border-radius:12px; background:var(--panel); overflow:hidden; }
+    summary { cursor:pointer; list-style:none; padding:15px 18px; font-weight:700; }
+    summary::-webkit-details-marker { display:none; }
+    summary::after { content:'+'; float:right; color:var(--accent); font-size:1.25rem; line-height:1; }
+    details[open] summary::after { content:'−'; }
+    details p { margin:0; padding:0 18px 17px; color:var(--muted); }
+    details p a { color:var(--accent); }
+    .category-note { margin:-7px 0 14px; color:var(--muted); }
+    footer { padding:22px 0 32px; border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { transition:none !important; } }
+  
+    /* Navegación compartida para todo el proyecto */
+    .wrap { width:min(1080px,calc(100% - 36px)); margin-left:auto; margin-right:auto; }
+    .site-header { position:sticky; top:0; z-index:40; display:flex; align-items:center; justify-content:space-between; gap:18px; width:100%; min-height:82px; padding:12px max(18px,calc((100vw - 1080px)/2)); border-bottom:1px solid var(--line); background:rgba(17,18,20,.96); backdrop-filter:blur(12px); }
+    .brand { display:flex; align-items:center; gap:11px; min-width:0; color:var(--ink); font-size:1.08rem; font-weight:800; letter-spacing:.08em; text-decoration:none; white-space:nowrap; }
+    .logo-mark { display:block; width:54px; height:54px; flex:none; background-image:var(--logo-image,url("./logo-3dscracth.png")); background-position:center; background-repeat:no-repeat; background-size:contain; }
+    .menu-trigger { display:grid; place-items:center; flex:none; width:48px; height:48px; border:1px solid var(--line); border-radius:14px; background:var(--panel); color:var(--accent); font-size:1.15rem; letter-spacing:.12em; text-decoration:none; }
+    .menu-trigger:hover,.menu-trigger:focus-visible { border-color:var(--accent); background:#293a48; outline:none; }
+    .drawer { position:fixed; inset:0; z-index:100; visibility:hidden; opacity:0; pointer-events:none; background:rgba(0,0,0,.44); transition:opacity .22s ease,visibility .22s ease; }
+    .drawer:target { visibility:visible; opacity:1; pointer-events:auto; }
+    .drawer-backdrop { position:absolute; inset:0; z-index:0; display:block; background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; }
+    .drawer-panel { position:absolute; top:0; right:0; z-index:1; display:flex; flex-direction:column; gap:12px; width:min(360px,90vw); height:100vh; height:100dvh; max-height:100dvh; overflow-y:auto; overscroll-behavior:contain; padding:20px 22px 28px; border-left:1px solid var(--line); background:#111214f7; transform:translateX(100%); transition:transform .22s ease; }
+    .drawer:target .drawer-panel { transform:translateX(0); }
+    .drawer-head { position:sticky; top:0; z-index:2; display:flex; align-items:center; justify-content:space-between; padding:4px 0 8px; color:var(--accent); font-weight:850; letter-spacing:.12em; background:#111214; }
+    .drawer-close { display:grid; place-items:center; flex:none; width:40px; height:40px; border:1px solid var(--line); border-radius:11px; background:var(--panel); color:var(--ink); text-decoration:none; font-size:1.3rem; }
+    .drawer-label { margin:9px 0 -5px; color:var(--accent); font-size:.72rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .drawer-links { display:flex; flex-direction:column; gap:8px; }
+    .drawer-links a { display:flex; align-items:center; min-height:46px; padding:11px 14px; border:1px solid var(--line); border-radius:12px; background:var(--panel); color:var(--muted); text-decoration:none; font-weight:700; transition:background .16s ease,color .16s ease,border-color .16s ease; }
+    .drawer-local a { background:transparent; font-weight:600; }
+    .drawer-links a:hover,.drawer-links a:focus-visible { border-color:var(--accent); background:var(--accent); color:#0d1820; outline:none; }
+    @media (max-width:520px) { .site-header { min-height:70px; padding-top:8px; padding-bottom:8px; } .brand { gap:9px; font-size:.98rem; } .logo-mark { width:48px; height:48px; } .menu-trigger { width:46px; height:46px; border-radius:12px; } .drawer-panel { width:min(370px,92vw); padding:16px 18px 24px; } }
+    @media (prefers-reduced-motion:reduce) { .drawer,.drawer-panel,.menu-trigger,.drawer-links a { transition:none !important; } }
+  
+    /* Sistema visual compartido */
+    html { scroll-behavior:smooth; scroll-padding-top:110px; }
+    body { background:radial-gradient(ellipse at 50% -12%,rgba(85,174,242,.10),transparent 42%),var(--bg); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { text-underline-offset:.22em; }
+    .page-hero { position:relative; isolation:isolate; overflow:hidden; margin:clamp(28px,5vw,48px) auto clamp(38px,6vw,64px); padding:clamp(30px,6vw,72px); border:1px solid rgba(85,174,242,.22); border-radius:26px; background:radial-gradient(ellipse at 88% 14%,rgba(85,174,242,.16),transparent 34%),linear-gradient(135deg,#1d2329 0%,#17191b 64%,#211a17 100%); box-shadow:0 22px 60px rgba(0,0,0,.28); }
+    .page-hero::before { content:""; position:absolute; z-index:-1; right:-150px; top:-190px; width:420px; height:420px; border:1px solid rgba(85,174,242,.19); border-radius:50%; box-shadow:0 0 0 28px rgba(85,174,242,.035),0 0 0 58px rgba(85,174,242,.025); pointer-events:none; }
+    .page-hero:not(.hero) { display:block; }
+    header.page-hero { min-height:0; align-items:initial; justify-content:initial; border:1px solid rgba(85,174,242,.22); }
+    .page-hero .eyebrow { display:inline-flex; align-items:center; width:max-content; max-width:100%; margin:0; padding:8px 12px; border:1px solid rgba(85,174,242,.3); border-radius:999px; background:rgba(85,174,242,.09); color:var(--accent); font-size:.76rem; font-weight:850; letter-spacing:.12em; text-transform:uppercase; }
+    .page-hero h1 { position:relative; max-width:850px; margin:18px 0 18px; font-size:clamp(2.65rem,7vw,5.8rem); line-height:.98; letter-spacing:-.065em; }
+    .page-hero .lead,.page-hero .intro { position:relative; max-width:700px; margin:0; color:var(--muted); font-size:clamp(1.03rem,1.6vw,1.18rem); line-height:1.75; }
+    .page-hero .notice { position:relative; max-width:920px; margin:24px 0 0; padding:14px 18px; border:1px solid rgba(165,104,68,.38); border-left:3px solid var(--warm); border-radius:0 14px 14px 0; background:rgba(12,13,14,.46); color:var(--muted); }
+    .page-hero .button { margin-top:22px; }
+    .visual { border-radius:24px; box-shadow:inset 0 1px rgba(255,255,255,.05),0 18px 36px rgba(0,0,0,.22); }
+    .section-head { align-items:flex-end; gap:24px; margin-bottom:26px; }
+    .section-head > p { max-width:470px; margin:0; line-height:1.7; }
+    .cards { gap:18px; }
+    .card,.form-card,.info-card,.gallery-card,.faq-section,.choice,.choose,.sources { border:1px solid rgba(255,255,255,.10); border-radius:20px; background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015)),var(--panel); box-shadow:0 14px 36px rgba(0,0,0,.20); }
+    .card,.gallery-card { transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
+    .card:hover,.gallery-card:hover { transform:translateY(-4px); border-color:rgba(85,174,242,.55); box-shadow:0 20px 42px rgba(0,0,0,.28); }
+    .card { padding:clamp(21px,3vw,28px); }
+    .num,.tag { color:var(--accent); }
+    .button { min-height:50px; border:1px solid rgba(255,255,255,.12); border-radius:13px; background:linear-gradient(135deg,#65b9f6,#45a4e9); color:#091722; box-shadow:0 8px 22px rgba(52,157,226,.18); transition:transform .18s ease,box-shadow .18s ease,filter .18s ease; }
+    .button:hover { transform:translateY(-2px); filter:brightness(1.06); box-shadow:0 12px 28px rgba(52,157,226,.25); }
+    .button:focus-visible,.menu-trigger:focus-visible,.drawer-close:focus-visible { outline:3px solid rgba(85,174,242,.58); outline-offset:3px; }
+    .faq-link { color:var(--accent); font-weight:700; }
+    .notice { border-radius:0 14px 14px 0; }
+    .form-card,.info-card { padding:clamp(22px,4vw,34px); }
+    .field label { display:block; margin-bottom:8px; color:var(--ink); font-weight:750; }
+    .field input:not([type="color"]),.field select,.field textarea,.color-row input[type="text"] { width:100%; min-height:48px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#121416; color:var(--ink); font:inherit; transition:border-color .16s ease,box-shadow .16s ease; }
+    .field textarea { min-height:132px; resize:vertical; }
+    .field input:focus,.field select:focus,.field textarea:focus,.color-row input:focus { border-color:var(--accent); outline:none; box-shadow:0 0 0 3px rgba(85,174,242,.16); }
+    .field input::placeholder,.field textarea::placeholder,.color-row input::placeholder { color:#92979b; }
+    .hint,.note { color:var(--muted); line-height:1.6; }
+    .gallery-card { grid-template-columns:1.08fr .92fr; overflow:hidden; }
+    .gallery-card figure { display:flex; flex-direction:column; min-width:0; margin:0; }
+    .gallery-card img { display:block; width:100%; min-height:290px; max-height:440px; height:100%; object-fit:cover; }
+    .image-note { padding:12px 16px; background:#151719; color:var(--muted); font-size:.82rem; line-height:1.5; }
+    .gallery-copy { display:flex; flex-direction:column; justify-content:center; padding:clamp(24px,4vw,40px); }
+    .gallery-copy h3 { margin-top:0; }
+    .faq-section { margin-top:28px; padding:clamp(20px,3vw,30px); scroll-margin-top:110px; }
+    .faq-list details { margin:10px 0; padding:0 18px; border:1px solid rgba(255,255,255,.09); border-radius:14px; background:rgba(0,0,0,.16); transition:border-color .18s ease,background .18s ease; }
+    .faq-list details[open] { border-color:rgba(85,174,242,.48); background:rgba(85,174,242,.045); }
+    .faq-list summary { position:relative; padding:17px 34px 17px 0; cursor:pointer; list-style:none; color:var(--ink); font-weight:750; }
+    .faq-list summary::-webkit-details-marker { display:none; }
+    .faq-list summary::after { content:"+"; position:absolute; top:50%; right:0; transform:translateY(-50%); color:var(--accent); font-size:1.35rem; font-weight:500; }
+    .faq-list details[open] summary::after { content:"−"; }
+    .faq-list details p { max-width:72ch; margin:0; padding:0 0 18px; color:var(--muted); line-height:1.7; }
+    section[id] { scroll-margin-top:110px; }
+    footer,footer.wrap { width:100%; max-width:none; margin:48px 0 0; padding:26px max(18px,calc((100vw - 1080px)/2)); border-top:1px solid var(--line); background:#151719; color:var(--muted); }
+    @media (max-width:760px) { .page-hero { margin:24px auto 40px; padding:clamp(24px,6vw,38px); border-radius:22px; } .hero.page-hero { grid-template-columns:1fr; gap:30px; } .page-hero h1 { font-size:clamp(2.5rem,11vw,4.4rem); } .section-head { display:grid; gap:12px; } .cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .order-layout { grid-template-columns:1fr; } .gallery-card { grid-template-columns:1fr; } .gallery-card img { min-height:240px; max-height:380px; } }
+    @media (max-width:560px) { .cards { grid-template-columns:1fr; } .page-hero { padding:24px 20px; } .page-hero::before { right:-250px; top:-220px; } .gallery-card img { min-height:220px; } .faq-section { padding:18px 14px; } .faq-list details { padding:0 13px; } .site-header { gap:12px; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .card,.gallery-card,.button { transition:none !important; } }
+  
+    /* Ajustes de accesibilidad y adaptación por dispositivo */
+    .skip-link { position:fixed; top:12px; left:12px; z-index:200; transform:translateY(-160%); padding:12px 16px; border-radius:11px; background:var(--accent); color:#091722; font-weight:850; text-decoration:none; box-shadow:0 8px 24px rgba(0,0,0,.28); transition:transform .18s ease; }
+    .skip-link:focus { transform:translateY(0); outline:3px solid #fff; outline-offset:3px; }
+    #contenido { scroll-margin-top:100px; }
+    :focus-visible { outline:3px solid rgba(85,174,242,.62); outline-offset:3px; }
+    .drawer-links a,.menu-trigger,.drawer-close { min-height:48px; }
+    img { max-width:100%; }
+    .faq-list { grid-template-columns:1fr; gap:12px; }
+    .faq-list details { min-width:0; margin:0; }
+    .faq-list summary { min-height:52px; display:flex; align-items:center; }
+    @media (min-width:1050px) { .faq-list { grid-template-columns:repeat(2,minmax(0,1fr)); } .faq-section { padding:32px; } }
+    @media (max-width:760px) { .wrap { width:min(100% - 32px,620px); } .site-header { padding-left:16px; padding-right:16px; } .page-hero { margin-top:22px; } .drawer-panel { width:min(390px,94vw); } .drawer-links a { min-height:52px; } .button { min-height:52px; } }
+    @media (max-width:560px) { body { font-size:16px; } .wrap { width:calc(100% - 28px); } .site-header { min-height:68px; padding-left:14px; padding-right:14px; } .brand { letter-spacing:.04em; } .menu-trigger { width:48px; height:48px; min-width:48px; } .button { width:100%; min-height:54px; } .field input:not([type="color"]),.field select,.field textarea,.color-row input[type="text"] { font-size:16px; } .lead,.intro { line-height:1.68; } .faq-list summary { min-height:56px; } }
+    @media (prefers-reduced-motion:reduce) { .skip-link { transition:none; } }
+  
+    @media (min-width:1050px) { .faq-list { grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; } .faq-section { padding:32px; } }
+    @media (min-width:761px) and (max-width:1049px) { .faq-list { grid-template-columns:1fr; } }
+    @media (max-width:760px) { .faq-list { grid-template-columns:1fr; } .faq-section { margin-top:32px; } }
+    @media (max-width:560px) { .faq-section { padding:17px 14px; } .faq-list details { border-radius:12px; } .faq-list summary { padding-right:30px; } }
+    /* FAQ · centro de ayuda por temas */
+    .page-hero { border-radius:28px; border-top:3px solid var(--accent); background-image:radial-gradient(ellipse at 86% 14%,rgba(85,174,242,.18),transparent 34%),linear-gradient(145deg,#1c242a,#17191b 65%,#211c18); }
+    .page-hero::after { content:"?"; position:absolute; z-index:-1; right:clamp(26px,7vw,110px); top:50%; transform:translateY(-50%); color:#9fd4fa; font-size:clamp(10rem,19vw,16rem); font-weight:900; line-height:1; opacity:.075; pointer-events:none; }
+    .faq-jumps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin-top:24px; }
+    .faq-jumps a { display:flex; align-items:center; gap:9px; min-height:48px; padding:8px 11px; border:1px solid rgba(85,174,242,.22); border-radius:12px; background:rgba(13,17,20,.54); color:var(--ink); font-size:.84rem; font-weight:750; text-decoration:none; transition:transform .18s ease,border-color .18s ease,background .18s ease; }
+    .faq-jumps a:hover { transform:translateY(-2px); border-color:var(--accent); background:rgba(85,174,242,.08); }
+    .faq-jumps a span { display:grid; place-items:center; flex:0 0 27px; width:27px; height:27px; border:1px solid rgba(85,174,242,.3); border-radius:9px; color:#a9d8fa; font-size:1rem; }
+    .faq-section { position:relative; overflow:hidden; border-left:3px solid var(--faq-color,var(--accent)); border-radius:7px 20px 20px 7px; background:linear-gradient(135deg,color-mix(in srgb,var(--faq-color,var(--accent)) 5%,transparent),transparent 48%),var(--panel); }
+    #comunes { --faq-color:#73bdf1; }
+    #fibras { --faq-color:#c48b61; }
+    #tecnicos { --faq-color:#a6d0e9; }
+    .faq-section h2 { display:flex; align-items:center; gap:12px; }
+    .faq-section h2::before { display:grid; place-items:center; flex:0 0 40px; width:40px; height:40px; border:1px solid color-mix(in srgb,var(--faq-color,var(--accent)) 52%,transparent); border-radius:12px; background:color-mix(in srgb,var(--faq-color,var(--accent)) 11%,transparent); color:var(--faq-color,var(--accent)); font-size:1.1rem; }
+    #impresion-3d h2::before { content:"?"; }
+    #comunes h2::before { content:"○"; }
+    #fibras h2::before { content:"▤"; }
+    #tecnicos h2::before { content:"△"; }
+    .faq-list summary { display:flex; align-items:center; gap:10px; min-height:56px; padding-left:2px; }
+    .faq-list summary::before { content:"?"; display:grid; place-items:center; flex:0 0 24px; width:24px; height:24px; border:1px solid rgba(85,174,242,.30); border-radius:50%; color:#9fd4fa; font-size:.8rem; font-weight:850; }
+    .faq-list details[open] summary::before { border-color:var(--faq-color,var(--accent)); color:var(--faq-color,var(--accent)); }
+    .faq-list details[open] { border-color:color-mix(in srgb,var(--faq-color,var(--accent)) 55%,transparent); }
+    .category-note { max-width:72ch; padding:11px 14px; border-left:2px solid var(--faq-color,var(--accent)); border-radius:0 10px 10px 0; background:rgba(255,255,255,.025); }
+    @media (max-width:760px) { .faq-jumps { grid-template-columns:repeat(2,minmax(0,1fr)); } .page-hero::after { right:4px; top:14%; font-size:8rem; } }
+    @media (max-width:560px) { .faq-jumps { gap:7px; } .faq-jumps a { min-height:46px; padding:7px 8px; font-size:.78rem; } .faq-section h2::before { flex-basis:36px; width:36px; height:36px; } .faq-list summary { gap:8px; } }
+  
+    /* Aplicaciones · mapa de ideas para piezas */
+    .page-hero.app-hero { display:grid; grid-template-columns:minmax(0,1.12fr) minmax(280px,.88fr); align-items:center; gap:clamp(24px,5vw,56px); border-radius:28px 8px 28px 8px; border-right:4px solid var(--warm); background-image:radial-gradient(ellipse at 12% 88%,rgba(165,104,68,.14),transparent 34%),linear-gradient(135deg,#24201e 0%,#17191b 65%,#1b252b 100%); }
+    .app-hero-copy { position:relative; z-index:1; }
+    .app-hero h1 { max-width:640px; font-size:clamp(2.7rem,6.5vw,5.4rem); }
+    .app-hero .eyebrow { border-color:rgba(165,104,68,.4); background:rgba(165,104,68,.10); color:#e2b08a; }
+    .app-photo { position:relative; z-index:1; margin:0; overflow:hidden; border:1px solid rgba(255,255,255,.15); border-radius:6px 20px 6px 20px; background:#121416; box-shadow:0 18px 42px rgba(0,0,0,.3); }
+    .app-photo img { display:block; width:100%; aspect-ratio:4/3; object-fit:cover; }
+    .app-photo figcaption { padding:10px 13px; color:var(--muted); font-size:.76rem; line-height:1.5; }
+    .app-photo a { color:#a9d8fa; }
+    .app-index { display:flex; flex-wrap:wrap; gap:9px; margin-top:22px; }
+    .app-index span { display:inline-flex; align-items:center; gap:7px; min-height:38px; padding:7px 11px; border:1px solid rgba(165,104,68,.3); border-radius:999px; background:rgba(165,104,68,.075); color:#e6c0a0; font-size:.8rem; font-weight:750; }
+    .app-index b { color:#f0d5be; }
+    .app-section { margin:50px 0; scroll-margin-top:110px; }
+    .app-section-head { max-width:740px; margin-bottom:20px; }
+    .app-section-head h2 { display:flex; align-items:center; gap:12px; margin:0 0 8px; font-size:clamp(1.5rem,3.3vw,2.15rem); }
+    .app-section-head p { margin:0; color:var(--muted); }
+    .app-section-head h2::before { display:grid; place-items:center; flex:0 0 42px; width:42px; height:42px; border:1px solid rgba(165,104,68,.4); border-radius:13px; background:rgba(165,104,68,.1); color:#e2b08a; font-size:1.1rem; }
+    #prototipos .app-section-head h2::before { content:"◇"; }
+    #funcionales .app-section-head h2::before { content:"▤"; }
+    #personalizados .app-section-head h2::before { content:"□"; }
+    #educativos .app-section-head h2::before { content:"△"; }
+    .app-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .app-card { position:relative; min-height:190px; padding:24px; border:1px solid rgba(255,255,255,.11); border-left:2px solid rgba(165,104,68,.75); border-radius:8px 20px 20px 8px; background:linear-gradient(145deg,rgba(165,104,68,.07),transparent 48%),var(--panel); }
+    .app-symbol { display:grid; place-items:center; width:43px; height:43px; margin-bottom:18px; border:1px solid rgba(165,104,68,.38); border-radius:14px; background:rgba(165,104,68,.1); color:#e6bb98; font-size:1.25rem; }
+    .app-card h3 { margin:0 0 8px; font-size:1.16rem; }
+    .app-card p { margin:0; color:var(--muted); line-height:1.7; }
+    .app-card p + p { margin-top:9px; }
+    .app-checklist { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:0; list-style:none; }
+    .app-checklist li { display:flex; gap:10px; align-items:flex-start; padding:14px; border:1px solid rgba(255,255,255,.09); border-radius:13px; background:rgba(255,255,255,.025); color:var(--muted); }
+    .app-checklist li::before { content:"✓"; display:grid; place-items:center; flex:0 0 24px; width:24px; height:24px; border:1px solid rgba(165,104,68,.42); border-radius:8px; color:#e6bb98; font-size:.76rem; font-weight:900; }
+    .app-notice { margin:22px 0; padding:17px 20px; border-left:3px solid var(--warm); border-radius:0 14px 14px 0; background:rgba(165,104,68,.075); color:var(--muted); }
+    .app-cta { display:flex; flex-wrap:wrap; gap:12px; margin:28px 0 4px; }
+    .app-cta .button { display:inline-flex; align-items:center; justify-content:center; padding:12px 18px; text-decoration:none; }
+    @media (max-width:760px) { .page-hero.app-hero { grid-template-columns:1fr; } .app-photo { max-width:620px; } .app-grid,.app-checklist { grid-template-columns:1fr; } }
+    @media (max-width:560px) { .page-hero.app-hero { border-radius:22px 7px 22px 7px; } .app-card { min-height:0; padding:20px 18px; } .app-section-head h2::before { flex-basis:36px; width:36px; height:36px; } .app-cta { display:grid; grid-template-columns:1fr; } }
+
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header"><a class="brand" href="https://mason-gpt.github.io/Scracth/#inicio" aria-label="3DScracth, inicio"><span class="logo-mark" aria-hidden="true"></span><span>3DSCRACTH</span></a><a class="menu-trigger" href="#menu" aria-label="Abrir menú" aria-haspopup="dialog">•••</a></header>
+  <aside class="drawer" id="menu"><a class="drawer-backdrop" href="#" aria-label="Cerrar menú"></a><div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Navegación del sitio"><div class="drawer-head"><span>3DSCRACTH</span><a class="drawer-close" href="#" aria-label="Cerrar menú">×</a></div><p class="drawer-label">Páginas del proyecto</p><nav class="drawer-links" aria-label="Páginas del proyecto">
+        <a href="https://mason-gpt.github.io/Scracth/#inicio">Inicio</a>
+        <a href="https://mason-gpt.github.io/Scracth-materiales/">Materiales</a>
+        <a href="https://mason-gpt.github.io/Scracth-galeria/">Galería</a>
+        <a href="https://mason-gpt.github.io/Scracth-diseno-fdm/">Diseño para FDM</a>
+        <a href="https://mason-gpt.github.io/Scracth-aplicaciones/">Aplicaciones</a>
+        <a href="https://mason-gpt.github.io/Scracth-faq/">Preguntas frecuentes</a>
+        <a href="https://mason-gpt.github.io/Scracth-pedidos/">Hacer un pedido</a>
+      </nav><p class="drawer-label">En esta página</p><nav class="drawer-links drawer-local" aria-label="Ideas de impresión"><a href="#prototipos">Prototipos</a><a href="#funcionales">Piezas útiles</a><a href="#personalizados">Personalizadas</a><a href="#educativos">Modelos educativos</a><a href="#guia">Qué describir</a></nav></div></aside>
+  <main class="wrap" id="contenido" tabindex="-1">
+    <header class="page-hero app-hero" id="arriba">
+      <div class="app-hero-copy"><p class="eyebrow">Ideas de impresión · FDM</p><h1>¿Qué se puede imaginar en 3D?</h1><p class="intro">La impresión 3D puede servir para explorar una forma, adaptar una pieza a un espacio o crear un modelo visual. Estos ejemplos ayudan a pensar proyectos; no son un catálogo ni garantizan que cada diseño pueda fabricarse.</p><div class="app-index" aria-label="Categorías de ideas"><span><b>01</b> Probar</span><span><b>02</b> Resolver</span><span><b>03</b> Crear</span></div></div>
+      <figure class="app-photo"><img src="./ideas-fdm-cc0.jpg" alt="Impresora 3D fabricando pequeños modelos rojos sobre la plataforma" width="1200" height="1200"><figcaption>Foto real: Pxhere, CC0 1.0, dedicada al dominio público, vía <a href="https://commons.wikimedia.org/wiki/File:Table-glass-machine-toy-making-printer-605269-pxhere.jpg">Wikimedia Commons</a>. <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en">Licencia CC0 1.0</a>.</figcaption></figure>
+    </header>
+    <section class="app-section" id="prototipos"><div class="app-section-head"><h2>Prototipos y maquetas</h2><p>Una primera versión física puede ayudar a revisar forma, tamaño y encaje antes de seguir desarrollando una idea.</p></div><div class="app-grid"><article class="app-card"><span class="app-symbol" aria-hidden="true">◇</span><h3>Probar una forma</h3><p>Un prototipo puede servir para detectar cambios necesarios en el volumen o la distribución de una pieza.</p></article><article class="app-card"><span class="app-symbol" aria-hidden="true">▧</span><h3>Mostrar un concepto</h3><p>Una maqueta puede ayudar a explicar una idea en un trabajo escolar, una presentación o una etapa temprana de diseño.</p></article></div></section>
+    <section class="app-section" id="funcionales"><div class="app-section-head"><h2>Accesorios para organizar</h2><p>Hay ideas cotidianas que dependen de un espacio o una medida concreta.</p></div><div class="app-grid"><article class="app-card"><span class="app-symbol" aria-hidden="true">▤</span><h3>Soportes y organizadores</h3><p>Separadores, soportes o guías pueden pensarse para ordenar objetos en una mesa, cajón o estante.</p></article><article class="app-card"><span class="app-symbol" aria-hidden="true">○</span><h3>Adaptadores sencillos</h3><p>Una pieza de unión o un pequeño adaptador puede resolver una necesidad específica, siempre que su uso y esfuerzo esperado sean adecuados.</p></article></div></section>
+    <section class="app-section" id="personalizados"><div class="app-section-head"><h2>Piezas personalizadas</h2><p>Una forma puede adaptarse a una necesidad particular, pero primero hay que revisar el diseño y las condiciones de uso.</p></div><div class="app-grid"><article class="app-card"><span class="app-symbol" aria-hidden="true">□</span><h3>Carcasas y cubiertas</h3><p>Formas para proteger o acomodar componentes; hay que tener en cuenta dimensiones, ventilación y calor cuando corresponda.</p></article><article class="app-card"><span class="app-symbol" aria-hidden="true">△</span><h3>Repuestos no críticos</h3><p>Algunas piezas sencillas podrían servir como reemplazo. No conviene asumir que una impresión es apta para usos de seguridad, cargas importantes o mecanismos críticos.</p></article></div></section>
+    <section class="app-section" id="educativos"><div class="app-section-head"><h2>Modelos educativos y decorativos</h2><p>También se pueden crear formas visuales para aprender, explicar o dar personalidad a un espacio.</p></div><div class="app-grid"><article class="app-card"><span class="app-symbol" aria-hidden="true">⌘</span><h3>Modelos para aprender</h3><p>Relieves, piezas geométricas o modelos a escala pueden ayudar a mostrar ideas de ciencias, matemática o diseño.</p></article><article class="app-card"><span class="app-symbol" aria-hidden="true">◈</span><h3>Objetos decorativos</h3><p>Figuras, soportes de escritorio y pequeñas formas personalizadas son ejemplos para inspirar otros proyectos.</p></article></div></section>
+    <section class="app-section" id="guia"><div class="app-section-head"><h2>Qué datos ayudan a analizar una idea</h2><p>Una descripción clara facilita revisar si el objeto tiene sentido para impresión FDM.</p></div><ul class="app-checklist"><li>Para qué se va a usar y dónde.</li><li>Medidas aproximadas y partes que deben encastrar.</li><li>Si recibirá calor, golpes, peso o flexión.</li><li>Un dibujo, foto de referencia o archivo, si lo tenés.</li></ul><div class="app-notice"><strong>Proyecto escolar:</strong> 3DScracth es ficticio. Las ideas son ejemplos educativos, no productos disponibles ni promesas de fabricación. La viabilidad depende del diseño, el material y los ajustes de impresión.</div><div class="app-cta"><a class="button" href="https://mason-gpt.github.io/Scracth-galeria/">Ver la galería</a><a class="button" href="https://mason-gpt.github.io/Scracth-materiales/">Explorar materiales</a><a class="button" href="https://mason-gpt.github.io/Scracth-pedidos/">Ir a pedidos</a></div></section>
+  </main><footer><div class="wrap">3DScracth · Proyecto escolar ficticio de impresión 3D.</div></footer>
+</body></html>
